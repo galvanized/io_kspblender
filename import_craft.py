@@ -75,9 +75,9 @@ def get_kspdir():
     direc = direc.rstrip('\n')
 
     if platform.system() == 'Windows':
-        kspdirfile = open(direc+'\\kspdir.txt','r',encoding='utf-8')
+        kspdirfile = open(direc+'\\kspdir.txt','r',encoding='latin-1')
     else:
-        kspdirfile = open(direc+'/kspdir.txt','r',encoding='utf-8')
+        kspdirfile = open(direc+'/kspdir.txt','r',encoding='latin-1')
     kspdir = kspdirfile.read()
     kspdir = kspdir.rstrip('\n')                                      # this plugin should now work on Linux -- <3 Sma!!!
     return kspdir
@@ -234,7 +234,7 @@ def import_parts(filepath,partdir,right_scale,right_location):
                         if "_fixed" not in obj.data.uv_layers[0].name:
                             obj.data.uv_layers.active.name+="_fixed"
                             for uvvertex in obj.data.uv_layers.active.data:
-                                uvvertex.uv[1] = -uvvertex.uv[1] + 1
+                                uvvertex.uv[1] = uvvertex.uv[1] + 1
                     
                     obj.select = True
                     bpy.ops.object.shade_smooth()
