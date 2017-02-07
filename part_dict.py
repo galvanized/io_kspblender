@@ -30,8 +30,8 @@ def make_exceptions():
     #in the .cfg and in the .craft. The structure of the dic is like this
     #
     #          'mod name'         'folder name'  replace rule
-    exceptions['B9 Aerospace'] = ('B9_Aerospace',('_','.'))
-    exceptions['B9 Style Shuttle Wings'] = ('GilB9Shuttle_Wings',('_','.'))
+    #exceptions['B9 Aerospace'] = ('B9_Aerospace',('_','.'))
+    #exceptions['B9 Style Shuttle Wings'] = ('GilB9Shuttle_Wings',('_','.'))
     #add more as necessary when mods inevitably fail
     return exceptions
 
@@ -63,7 +63,7 @@ def probe_large(path):
     cfgs=[]
     for p,d,f in os.walk(os.path.join(path,"GameData")): #os.walk creates the list of dirs, subdirs and files
         for i in f:
-            if ".cfg" in i: #Select the files needed for later
+            if i[-4:] == ".cfg": #Select the files needed for later
                 cfgs.append((p,i))
     return(cfgs)
     
@@ -93,8 +93,8 @@ def make_dict_aux(cfgs,kspdir): #This function is the one making the dict
         got_cat = False
         category = "part"
         for line in f: #Looks for the name,scale,... in a .cfg
-            if "name =" in line and not(got_name):
-                part_name=line.split()[-1]
+            if ("name =" in line or "name=" in line) and not(got_name):
+                part_name=line.split("=")[-1].strip()
                 got_name= True
             #if "rescaleFactor = " in line and not(got_rescale):
             #    rescale_fact = float(line.split()[-1])
@@ -111,21 +111,25 @@ def make_dict_aux(cfgs,kspdir): #This function is the one making the dict
             #        x,y,z=line_in[-3:]
             #        scale = (float(x),float(y),float(z))
             #        got_scale = True
-            if "\bposition =" in line and not(got_pos):
+            if ("position =" in line or "position=" in line) and not(got_pos):
+                print(line)
                 line = line.replace(","," ")
                 x,y,z=line.strip().split()[-3:]
-                pos = (float(x),float(y),float(z))
-                got_pos=True
-            if "category =" in line and not(got_cat):
-                category = line.split()[-1]
+                try:
+                    pos = (float(x),float(y),float(z))
+                    got_pos=True
+                except:
+                    pass
+            if ("category =" in line or "category=" in line) and not(got_cat):
+                category = line.split("=")[-1].strip()
                 got_cat=True
-            if "model =" in line and not(got_path):
-                part_path = line.split()[-1]
+            if ("model =" in line or "model=" in line) and not(got_path):
+                part_path = line.split("=")[-1].strip()
                 part_path = part_path.replace("/",sep) #The sep is used here
                 part_path = os.path.join(os.path.join(kspdir,"GameData"),part_path)+".mu"
                 got_path= True
-            if "mesh =" in line and not(got_path):
-                part_path = line.split()[-1]
+            if ("mesh =" in line or "mesh=" in line) and not(got_path):
+                part_path = line.split("=")[-1].strip()
                 if ".DAE" in part_path or ".dae" in part_path:
                     part_path = "model.mu"                  # or at least I hope so
                 part_path = os.path.join(path,part_path)
