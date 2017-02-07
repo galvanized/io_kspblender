@@ -20,7 +20,7 @@
 # This code automatically finds all parts in Kerbal Space Program.
 # Cptman added support for every mod while at the same time overcoming
 # the issues of rescaled and relocated parts.
-
+import codecs
 import os
 import platform
 
@@ -83,7 +83,7 @@ def make_dict_aux(cfgs,kspdir): #This function is the one making the dict
         pos = (0,0,0)
         #scale=(0,0,0)
         #rescale_fact = 1
-        f=open(os.path.join(path,cfg))
+        f=codecs.open(os.path.join(path,cfg),"r",encoding='utf-8', errors='ignore')
         part_path = ""
         got_path = False
         got_name = False
@@ -111,7 +111,7 @@ def make_dict_aux(cfgs,kspdir): #This function is the one making the dict
             #        x,y,z=line_in[-3:]
             #        scale = (float(x),float(y),float(z))
             #        got_scale = True
-            if "position =" in line and not(got_pos):
+            if "\bposition =" in line and not(got_pos):
                 line = line.replace(","," ")
                 x,y,z=line.strip().split()[-3:]
                 pos = (float(x),float(y),float(z))

@@ -173,8 +173,8 @@ class part:
                 self.modCost = float(line.split()[2])                           #"modCost = 0" -> 0 ____________? (always 0)
             if line.split()[0] == "modMass":
                 self.modMass = float(line.split()[2])                           #"modMass = 0" -> _______________? (always 0)
-            if line.split()[0] == "modSize":                                    #(line below this one) "modSize = (0.0, 0.0, 0.0)" -> (0.0, 0.0, 0.0), y<>z
-                self.modSize = tuple([float(" ".join(line.split()[2:]).split(", ")[0][1:]), float(" ".join(line.split()[2:]).split(", ")[2][0:-1]), float(" ".join(line.split()[2:]).split(", ")[1])])
+#            if line.split()[0] == "modSize":                                    #(line below this one) "modSize = (0.0, 0.0, 0.0)" -> (0.0, 0.0, 0.0), y<>z
+#                self.modSize = tuple([float(" ".join(line.split()[2:]).split(", ")[0][1:]), float(" ".join(line.split()[2:]).split(", ")[2][0:-1]), float(" ".join(line.split()[2:]).split(", ")[1])])
             if line.split()[0] == "link":
                 self.linklist.append(link(line))                                #new entry in list of links with new link instance
             if line.split()[0] == "attN":

@@ -83,7 +83,6 @@ def get_kspdir():
     return kspdir
 
 def import_parts(filepath,partdir,right_scale,right_location):
-
     ksp = get_kspdir()
     
     for obj in bpy.context.scene.objects:
@@ -234,7 +233,7 @@ def import_parts(filepath,partdir,right_scale,right_location):
                         if "_fixed" not in obj.data.uv_layers[0].name:
                             obj.data.uv_layers.active.name+="_fixed"
                             for uvvertex in obj.data.uv_layers.active.data:
-                                uvvertex.uv[1] = -uvvertex.uv[1] + 1
+                                uvvertex.uv[1] = uvvertex.uv[1] + 1
                     
                     obj.select = True
                     bpy.ops.object.shade_smooth()
