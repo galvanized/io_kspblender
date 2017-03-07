@@ -20,7 +20,7 @@
 # This code automatically finds all parts in Kerbal Space Program.
 # Cptman added support for every mod while at the same time overcoming
 # the issues of rescaled and relocated parts.
-
+import codecs
 import os
 import platform
 
@@ -83,7 +83,7 @@ def make_dict_aux(cfgs,kspdir): #This function is the one making the dict
         pos = (0,0,0)
         #scale=(0,0,0)
         #rescale_fact = 1
-        f=open(os.path.join(path,cfg),'r',encoding='latin-1')
+        f=codecs.open(os.path.join(path,cfg),"r",encoding='utf-8', errors='ignore')
         part_path = ""
         got_path = False
         got_name = False
@@ -111,21 +111,25 @@ def make_dict_aux(cfgs,kspdir): #This function is the one making the dict
             #        x,y,z=line_in[-3:]
             #        scale = (float(x),float(y),float(z))
             #        got_scale = True
-            if "\bposition =" in line and not(got_pos):
+            if ("position =" in line or "position=" in line) and not(got_pos):
+                print(line)
                 line = line.replace(","," ")
                 x,y,z=line.strip().split()[-3:]
-                pos = (float(x),float(y),float(z))
-                got_pos=True
-            if "category =" in line and not(got_cat):
-                category = line.split()[-1]
+                try:
+                    pos = (float(x),float(y),float(z))
+                    got_pos=True
+                except:
+                    pass
+            if ("category =" in line or "category=" in line) and not(got_cat):
+                category = line.split("=")[-1].strip()
                 got_cat=True
-            if "model =" in line and not(got_path):
-                part_path = line.split()[-1]
+            if ("model =" in line or "model=" in line) and not(got_path):
+                part_path = line.split("=")[-1].strip()
                 part_path = part_path.replace("/",sep) #The sep is used here
                 part_path = os.path.join(os.path.join(kspdir,"GameData"),part_path)+".mu"
                 got_path= True
-            if "mesh =" in line and not(got_path):
-                part_path = line.split()[-1]
+            if ("mesh =" in line or "mesh=" in line) and not(got_path):
+                part_path = line.split("=")[-1].strip()
                 if ".DAE" in part_path or ".dae" in part_path:
                     part_path = "model.mu"                  # or at least I hope so
                 part_path = os.path.join(path,part_path)

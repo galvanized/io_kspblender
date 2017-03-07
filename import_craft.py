@@ -83,7 +83,6 @@ def get_kspdir():
     return kspdir
 
 def import_parts(filepath,partdir,right_scale,right_location):
-
     ksp = get_kspdir()
     
     for obj in bpy.context.scene.objects:
