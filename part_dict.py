@@ -134,6 +134,18 @@ def make_dict_aux(cfgs,kspdir): #This function is the one making the dict
                     part_path = "model.mu"                  # or at least I hope so
                 part_path = os.path.join(path,part_path)
                 got_path = True
+            #test the part path
+            if not os.path.isfile(part_path):
+                import glob
+                all_mufiles = glob.glob(os.path.join(path,"*.mu"))
+                tmp_lowercase_mu_dict = dict([(os.path.basename(i).lower(),i) for i in all_mufiles])
+                if part_name.lower() + ".mu" in tmp_lowercase_mu_dict.keys():
+                    part_path = os.path.join(path,tmp_lowercase_mu_dict.get(part_name.lower() + ".mu"))
+                    got_path = True
+                elif part_tuple[1].replace(".cfg","").lower() + ".mu" in tmp_lowercase_mu_dict.keys():
+                    blah = part_tuple[1].replace(".cfg","").lower() + ".mu"
+                    part_path = os.path.join(path,tmp_lowercase_mu_dict.get(blah))
+                    got_path = True
                 
         f.close()      
         if got_name: #Adds the part to the dict if the the name was acquired
