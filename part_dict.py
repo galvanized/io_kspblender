@@ -46,7 +46,7 @@ def make_dict(path):
     #return(p,rs,rl)
     exceptions_manager(p,rl,exceptions)
     return(p,rl)
-    
+
 def probe(path):
 #The path must be the directory path for KSP not the .exe path, eg: "C:\\ksp-090\KSP" not ""C:\\ksp-090\KSP\KSP.exe"
 #otherwise it won't find anything
@@ -57,23 +57,23 @@ def probe(path):
             if ".cfg" in i and "Parts" in p: #Select the files needed for later
                 cfgs.append((p,i))
     return(cfgs)
-    
+
 def probe_large(path):
-#This one is for the mod which don't have a 'Parts' folder, but it will pick useless .cfg files too 
+#This one is for the mod which don't have a 'Parts' folder, but it will pick useless .cfg files too
     cfgs=[]
     for p,d,f in os.walk(os.path.join(path,"GameData")): #os.walk creates the list of dirs, subdirs and files
         for i in f:
             if ".cfg" in i: #Select the files needed for later
                 cfgs.append((p,i))
     return(cfgs)
-    
-    
+
+
 def make_dict_aux(cfgs,kspdir): #This function is the one making the dict
     if platform.system() == 'Windows': #Thanks Dasoccerguy for that part :)
-        sep = "\\" #The path separator to use, used just one time 
+        sep = "\\" #The path separator to use, used just one time
     else:
         sep = "/"
-        
+
     partdir = {}
     right_loc = {}
     #right_scale = {}
@@ -107,7 +107,7 @@ def make_dict_aux(cfgs,kspdir): #This function is the one making the dict
             #        scale= (sc,sc,sc)
             #        got_scale = True
             #    if len(line_in) == 5: #For lines : scale = 22,10,50
-            #        line = line.replace(","," ") 
+            #        line = line.replace(","," ")
             #        x,y,z=line_in[-3:]
             #        scale = (float(x),float(y),float(z))
             #        got_scale = True
@@ -134,15 +134,30 @@ def make_dict_aux(cfgs,kspdir): #This function is the one making the dict
                     part_path = "model.mu"                  # or at least I hope so
                 part_path = os.path.join(path,part_path)
                 got_path = True
-                
-        f.close()      
+        f.close()
+        #If the MU file was still not found, try some heuristics to guess it.
+        #test the part path
+        if got_name and ((not got_path) or (not os.path.isfile(part_path))):
+            import glob
+            all_mufiles = glob.glob(os.path.join(path,"*.mu"))
+            tmp_lowercase_mu_dict = dict([(os.path.basename(i).lower(),i) for i in all_mufiles])
+            if len(all_mufiles) == 1:
+                part_path = os.path.join(path,os.path.basename(all_mufiles[0]))
+
+            if part_name.lower() + ".mu" in tmp_lowercase_mu_dict.keys():
+                part_path = os.path.join(path,tmp_lowercase_mu_dict.get(part_name.lower() + ".mu"))
+                got_path = True
+            elif part_tuple[1].replace(".cfg","").lower() + ".mu" in tmp_lowercase_mu_dict.keys():
+                blah = part_tuple[1].replace(".cfg","").lower() + ".mu"
+                part_path = os.path.join(path,tmp_lowercase_mu_dict.get(blah))
+                got_path = True
         if got_name: #Adds the part to the dict if the the name was acquired
             partdir[part_name] = [os.path.join(part_path),category]
             #if got_scale and got_rescale:
             #    x,y,z=scale
             #    x*=rescale_fact
             #    y*=rescale_fact
-            #    z*=rescale_fact 
+            #    z*=rescale_fact
             #    right_scale[part_name] = ((x,y,z)) #Change to Vector((x,y,z)) when importing to blender
             #if got_rescale and not(got_scale):
             #    right_scale[part_name] = ((rescale_fact,rescale_fact,rescale_fact)) #Same here
@@ -154,7 +169,7 @@ def make_dict_aux(cfgs,kspdir): #This function is the one making the dict
     return(partdir,right_loc)
 
 
-         
+
 #def exceptions_manager(partdir,rs,rl,exceptions):
 def exceptions_manager(partdir,rl,exceptions):
     def add_to_dir(modif_list,dic):
