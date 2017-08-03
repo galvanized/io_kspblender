@@ -143,7 +143,7 @@ def make_dict_aux(cfgs,kspdir): #This function is the one making the dict
             tmp_lowercase_mu_dict = dict([(os.path.basename(i).lower(),i) for i in all_mufiles])
             if len(all_mufiles) == 1:
                 part_path = os.path.join(path,os.path.basename(all_mufiles[0]))
-
+                got_path = True
             if part_name.lower() + ".mu" in tmp_lowercase_mu_dict.keys():
                 part_path = os.path.join(path,tmp_lowercase_mu_dict.get(part_name.lower() + ".mu"))
                 got_path = True
